@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0010;
+    overflow: hidden;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,200,220,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,180,200,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,220,230,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,200,215,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 35%, rgba(255,180,200,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 85%, rgba(255,210,225,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,200,215,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 70%, rgba(255,180,195,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 90%, rgba(255,220,230,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 15%, rgba(255,200,220,0.7) 0%, transparent 100%);
+  }
+
+  .glow-bg {
+    position: fixed;
+    width: 600px; height: 600px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, rgba(180,0,60,0.25) 0%, transparent 70%);
+    animation: pulse-glow 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.12); }
+  }
+
+  /* Container */
+  .scene {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-14px); }
+  }
+
+  
+  svg {
+    width: 520px;
+    height: 490px;
+    filter: drop-shadow(0 0 30px rgba(220, 20, 80, 0.7))
+            drop-shadow(0 0 80px rgba(180, 0, 60, 0.4));
+    animation: heart-beat 1.2s ease-in-out infinite;
+  }
+
+  @keyframes heart-beat {
+    0%,  100% { transform: scale(1); }
+    14%        { transform: scale(1.06); }
+    28%        { transform: scale(0.98); }
+    42%        { transform: scale(1.04); }
+    70%        { transform: scale(1); }
+  }
+
+  /* Text overlay — absolutely centred on the SVG */
+  .text-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -44%);
+    text-align: center;
+    color: #fff;
+    pointer-events: none;
+    animation: text-in 1.6s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes text-in {
+    0%   { opacity: 0; transform: translate(-50%, -40%); }
+    100% { opacity: 1; transform: translate(-50%, -44%); }
+  }
+
+  .name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #fff8fb;
+    text-shadow: 0 2px 18px rgba(255,100,140,0.7);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .divider {
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,200,215,0.8), transparent);
+    margin: 0.4rem auto 0.7rem;
+  }
+
+  .message {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.18rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255, 235, 242, 0.92);
+    text-shadow: 0 1px 10px rgba(180,0,60,0.5);
+    letter-spacing: 0.03em;
+  }
+
+  /* Floating petals */
+  .petals { position: fixed; inset: 0; pointer-events: none; }
+  .petal {
+    position: absolute;
+    width: 8px; height: 12px;
+    background: radial-gradient(ellipse, rgba(255,120,160,0.7), rgba(200,0,60,0.3));
+    border-radius: 50% 0 50% 0;
+    animation: fall linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes fall {
+    0%   { transform: translateY(-40px) rotate(0deg);   opacity: 0.8; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="glow-bg"></div>
+<div class="petals" id="petals"></div>
+
+<div class="scene">
+  <svg viewBox="0 0 520 490" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Main gradient: rich crimson to deep rose -->
+      <radialGradient id="heartGrad" cx="50%" cy="40%" r="60%">
+        <stop offset="0%"   stop-color="#ff6090"/>
+        <stop offset="40%"  stop-color="#e0103a"/>
+        <stop offset="100%" stop-color="#7a0020"/>
+      </radialGradient>
+
+      <!-- Sheen highlight -->
+      <radialGradient id="sheen" cx="38%" cy="28%" r="35%">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.28)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+
+      <!-- Soft inner shadow at the cleft -->
+      <radialGradient id="cleftShadow" cx="50%" cy="10%" r="30%">
+        <stop offset="0%"   stop-color="rgba(80,0,20,0.5)"/>
+        <stop offset="100%" stop-color="rgba(80,0,20,0)"/>
+      </radialGradient>
+
+      <filter id="innerGlow">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+    </defs>
+
+    <path id="heartPath"
+      d="M260,420
+         C200,380 60,310 60,200
+         C60,130 110,80 180,80
+         C210,80 240,95 260,120
+         C280,95 310,80 340,80
+         C410,80 460,130 460,200
+         C460,310 320,380 260,420Z"
+
+    <use href="#heartPath" fill="url(#heartGrad)"/>
+    
+    <use href="#heartPath" fill="url(#sheen)"/>
+  
+    <use href="#heartPath" fill="url(#cleftShadow)"/>
+
+    
+    <ellipse cx="195" cy="155" rx="48" ry="32"
+             fill="rgba(255,255,255,0.13)" transform="rotate(-30,195,155)"/>
+
+    
+    <use href="#heartPath"
+         fill="none"
+         stroke="rgba(255,150,180,0.35)"
+         stroke-width="3"/>
+  </svg>
+
+  <div class="text-overlay">
+    <span class="name">Miss Shivalika</span>
+    <span class="divider"></span>
+    <div class="message">
+      You are the most<br>
+      beautiful woman<br>
+      in the world
+    </div>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('petals');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.left   = Math.random() * 100 + 'vw';
+    p.style.top    = '-20px';
+    p.style.animationDuration  = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay     = (Math.random() * 12) + 's';
+    p.style.width  = (6 + Math.random() * 6) + 'px';
+    p.style.height = (9 + Math.random() * 7) + 'px';
+    p.style.opacity = 0.5 + Math.random() * 0.5;
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>
